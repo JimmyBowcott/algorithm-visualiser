@@ -1,8 +1,15 @@
+import Arrays from "./sections/Arrays"
+import Trees from "./sections/Trees"
 
 const Homepage = () => {
+
+
+
+
     return(
-        <div className="flex flex-col h-screen w-screen items-center justify-center text-center">
-            <h1 className="text-7xl font-bold text-fuchsia-600">Wagwan</h1>
+        <div className="flex flex-col flex-wrap gap-8">
+            <Arrays />
+            <Trees />
         </div>
     )
 }
