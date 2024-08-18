@@ -4,7 +4,7 @@ const Title = () => {
     const [text, setText] = useState('')
     const [isTyping, setIsTyping] = useState(true);
     const [index, setIndex] = useState(0);
-    const fullText = 'str="Algorithm Visualiser"';
+    const fullText = 'title="Algorithm Visualiser"';
 
     useEffect(() => {
         let timeout
@@ -21,7 +21,7 @@ const Title = () => {
                 if (index > 0) {
                     setText((prev) => prev.slice(0, -1));
                     setIndex(index - 1);
-                } else {
+                } else { 
                     clearInterval(interval);
                     timeout = setTimeout(() => setIsTyping(true), 1000);
                 }
@@ -35,8 +35,8 @@ const Title = () => {
     }, [index, isTyping]);
 
     return (
-        <div className="m-8">
-        <span className="text-4xl text-orange-600">{text}</span><span className="text-4xl text-gray-300 animate-caret">|</span>
+        <div className="flex justify-center m-8">
+            <span className="text-2xl sm:text-4xl text-orange-600">{text}</span><span className="text-2xl sm:text-4xl text-gray-300 animate-caret">|</span>
         </div>
     )
 }

@@ -1,15 +1,18 @@
 import { Routes, Route} from "react-router-dom";
 import Homepage from "./pages/Homepage";
 import Title from "./components/Title";
+import SortPage from "./pages/SortPage";
+import TreePage from "./pages/TreePage";
+
 function App() {
 
   return (
-    <div className="flex flex-col w-full h-screen items-center justify-between bg-white text-slate-800 dark:bg-slate-800 dark:text-white font-light">
-      <div className="h-auto">
+    <div className="flex flex-col w-full min-h-screen justify-between bg-slate-800 text-white font-light overflow-hidden">
       <Title />
-      </div>
       <Routes>
           <Route path="/" element={<Homepage />} />
+          <Route path="/sort" element={<SortPage />} />
+          <Route path="/tree" element={<TreePage />} />
       </Routes>
       <div className="h-8 m-2 flex justify-center hover:underline text-s font-normal">
         <a href="https://github.com/jimmybowcott/algorithm-visualiser">© 2024 Jimmy Bowcott</a>
