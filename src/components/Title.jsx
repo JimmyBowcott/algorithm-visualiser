@@ -35,7 +35,7 @@ const Title = () => {
     }, [index, isTyping]);
 
     return (
-        <div className="flex justify-center m-8">
+        <div className="flex justify-center m-4 mt-8">
             <span className="text-2xl sm:text-4xl text-orange-600">{text}</span><span className="text-2xl sm:text-4xl text-gray-300 animate-caret">|</span>
         </div>
     )

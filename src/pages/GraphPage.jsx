@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useState, useEffect } from 'react';
-import Tree from "../components/Tree";
+import GraphVisualiser from "../components/GraphVisualiser";
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -25,40 +25,47 @@ function replaceDash(string) {
 }
 
 const descriptions = {
-    'breadth-first-search': 'Searches the tree level by level, left to right for a target value.',
-    'depth-first-search': 'Searches the tree depth first, left to right for the specified value.',
-    'pre-order-traversal': 'Traverses the tree by visiting the root node, then left, then right.',
-    'in-order-traversal': 'Traverses the tree by visiting the left node, then root, then right.',
-    'post-order-traversal': 'Traverses the tree by visiting the left node, then right, then root.',
+    'breadth-first-search': 'Starts at the root and searches all neighbours for the shortest path to the end node.',
+    'depth-first-search': 'Explores as deep as possible before backtracking. Does not guarentee the shortest path.',
+    'A*': 'Uses a heuristic approach as well as a priority queue to explore nodes with the lowest cost first.'
   }
 
-const TreePage = () => {
+const GraphPage = () => {
     const query = useQuery();
     const location = useLocation();
     const [type, setType] = useState(query.get('type'));
     const title = replaceDash(capitalise(type))
     const navigate = useNavigate();
+    const [tip, setTip] = useState(true);
 
     useEffect (() => {
         const t = query.get('type');
-        if (!descriptions[t]) { navigate('/tree?type=breadth-first-search') }
+        if (!descriptions[t]) { navigate('/graph?type=breadth-first-search') }
         setType(t);
     }, [location.search, query, navigate]);
 
     return (
         <div className="flex flex-col gap-2 w-full flex-grow relative">
-            <Link to='/' className="absolute top-0 left-12">
+            <Link to='/' className="absolute -top-4 left-12">
                 <h1 className="text-lg sm:text-2xl hover:text-orange-600">&larr; Back</h1>
             </Link>
             <div className="flex flex-col items-center gap-4 w-full md:max-w-[1100px] mx-auto p-4">
                 <h1 className="text-3xl sm:text-4xl mt-8 sm:m-0">{title}</h1>
                 <p className="text-lg">{descriptions[type] || descriptions['selection']}</p>
-                <div className="flex flex-col items-center gap-2 w-full mt-2 sm:mt-6 md:mt-12">
-                    <Tree type={type} />
+                { tip && 
+                <div className="flex flex-row gap-2 items-center cursor-pointer" onClick={() => setTip(false)}>
+                    <p className="text-lg">Tip: <span className="text-orange-600">Click the squares</span> to add a wall!</p>
+                    <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path id="Vector" d="M16 16L12 12M12 12L8 8M12 12L16 8M12 12L8 16" className="stroke-slate-300 hover:stroke-orange-600 stroke-2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                </div>
+                }
+                <div className="flex flex-col items-center gap-2 w-full mt-2">
+                    <GraphVisualiser type={type} />
                 </div>
             </div>
         </div>
     )
 }
 
-export default TreePage
+export default GraphPage

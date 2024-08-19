@@ -338,7 +338,7 @@ const SortVisualiser = ({type='selection'}) => {
                     {!active && <button className="bg-orange-600 hover:bg-orange-700 shadow-md rounded-lg p-1 px-6 transition-all duration-750" onClick={() => startSort()}>Sort</button>}
                     {active && <button className="bg-slate-700 rounded-lg p-1 px-6 shadow-md">Sort</button>}
                     
-                    <select value={type} onChange={handleTypeChange}
+                    <select value={type} onChange={active ? () => {} : handleTypeChange}
                     className="rounded-lg px-2 bg-slate-700 shadow-md">
                         <option value="selection">Selection sort</option>
                         <option value="insertion">Insertion sort</option>

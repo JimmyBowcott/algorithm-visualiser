@@ -23,12 +23,13 @@ const Tree = ({type="Breath-first-search"}) => {
     const [sortedData, setSortedData] = useState([]);
     const [arrayLength, setArrayLength] = useState(9);
     const [selectedData, setSelectedData] = useState([0,0]);
-    const [displayArray, setDisplayArray] = useState([]);
-    const stepDelay = 500;
+    const [displayArray, setDisplayArray] = useState(null);
+    const stepDelay = 750;
     const navigate = useNavigate();
 
     const handleTypeChange = (e) => {
       navigate(`/tree?type=${e.target.value}`)
+      setDisplayArray(null);
   }
 
     const handleGenerateRandom = useCallback(() => {
@@ -110,6 +111,7 @@ const Tree = ({type="Breath-first-search"}) => {
       setSortedData(sortedData);
       const randomData = Math.floor(Math.random() * data.length);
       setSelectedData([sortedData[randomData], randomData]);
+      setDisplayArray(null);
 
     }, [setTreeData, levelOrder]);
 
@@ -117,12 +119,10 @@ const Tree = ({type="Breath-first-search"}) => {
         handleChange();
     }, [avl, handleChange]);
 
-    // Delay for sorting
     const delay = useCallback((ms) => new Promise((resolve) => setTimeout(resolve, ms)), []);
 
     // Visual searching algorithms
     const startSearch = async () => {
-      setDisplayArray([]);
       setActive(true);
       switch (type) {
         case 'breadth-first-search':
@@ -131,13 +131,13 @@ const Tree = ({type="Breath-first-search"}) => {
         case 'depth-first-search':
           await DFS(selectedData[0]);
           break;
-        case 'pre-order traversal':
+        case 'pre-order-traversal':
             await preOrder();
             break;
-        case 'in-order traversal':
+        case 'in-order-traversal':
             await inOrder();
             break;
-        case 'post-order traversal':
+        case 'post-order-traversal':
           await postOrder();
           break;
         default:
@@ -197,23 +197,112 @@ const Tree = ({type="Breath-first-search"}) => {
     }
     
     const DFS = async (target) => {
-
+      if (avlWithKeys.root) {
+        const stack = [avlWithKeys.root];
+        while (stack.length) {
+          const node = stack.pop();
+          if (node) {
+            const domNode = document.getElementById(`node-${node.key}`);
+            addOrange(domNode);
+            if (node.value === target) {
+              removeOrange(domNode);
+              await flashGreen(domNode);
+              return
+            }
+            if (node.right) stack.push(node.right);
+            if (node.left) stack.push(node.left);
+            await delay(stepDelay);
+            removeOrange(domNode);
+          }
+        }
+      }
     }
 
     const preOrder = async () => {
+      if (avlWithKeys.root) {
+        const result = [];
+        const stack = [avlWithKeys.root];
+
+        while(stack.length) {
+          const node = stack.pop();
+          if (node) {
+            const domNode = document.getElementById(`node-${node.key}`);
+            addOrange(domNode)
+            result.push(node.value);
+            if (node.right) stack.push(node.right);
+            if (node.left) stack.push(node.left);
+            setDisplayArray(JSON.stringify(result).replace(/,/g, ', '))
+            await delay(stepDelay);
+            removeOrange(domNode);
+          }
+        }
+        return result;
+      }
     }
 
     const inOrder = async () => {
+      if (avlWithKeys.root) {
+        const result = [];
+        const stack = [];
+        let current = avlWithKeys.root;
+    
+        while (stack.length || current) {
+          while (current) {
+            stack.push(current);
+            current = current.left;
+          }
+          current = stack.pop();
+          const domNode = document.getElementById(`node-${current.key}`);
+          addOrange(domNode);
+          result.push(current.value);
+          setDisplayArray(JSON.stringify(result).replace(/,/g, ', '));
+          await delay(stepDelay);
+          removeOrange(domNode);
+          current = current.right;
+        }
+    
+        return result;
+      }
     }
 
     const postOrder = async () => {
+      if (avlWithKeys.root) {
+        const result = [];
+        const stack = [];
+        let current = avlWithKeys.root;
+        let lastVisited = null;
+    
+        while (stack.length || current) {
+          while (current) {
+            stack.push(current);
+            current = current.left;
+          }
+    
+          const peekNode = stack[stack.length - 1];
+    
+          if (peekNode.right && lastVisited !== peekNode.right) {
+            current = peekNode.right;
+          } else {
+            const node = stack.pop();
+            const domNode = document.getElementById(`node-${node.key}`);
+            addOrange(domNode);
+            result.push(node.value);
+            setDisplayArray(JSON.stringify(result).replace(/,/g, ', '));
+            await delay(stepDelay);
+            removeOrange(domNode);
+            lastVisited = node;
+          }
+        }
+    
+        return result;
+      }
     }
   
     return (
         <div className="flex flex-col gap-1 items-end w-full relative">
             {(type  === 'pre-order-traversal' || type === 'in-order-traversal'
             || type === 'post-order-traversal') &&
-            <h1 className="text-2xl w-full text-center mb-4 h-8">{displayArray.length > 0 ? `Result: ${displayArray}` : ""}</h1>}
+            <h1 className="text-2xl w-full text-center mb-4 h-8">{displayArray ? `Result: ${displayArray}` : ""}</h1>}
             {(type === "breadth-first-search" || type === "depth-first-search") &&
             <h1 className="text-2xl w-full text-center mb-4 h-8">{`Target: ${selectedData[0]}`}</h1>}
             <div className="w-full max-w-4xl mx-auto p-4 rounded-lg">
@@ -237,7 +326,7 @@ const Tree = ({type="Breath-first-search"}) => {
             {!active && <button className="bg-orange-600 hover:bg-orange-700 shadow-md rounded-lg p-1 px-6 transition-all duration-750" onClick={startSearch}>Start</button>}
             {active && <button className="bg-slate-700 rounded-lg p-1 px-6 shadow-md">Start</button>}
             
-            <select value={type} onChange={handleTypeChange}
+            <select value={type} onChange={active ? () => {} : handleTypeChange}
             className="rounded-lg px-2 bg-slate-700 shadow-md">
                 <option value="breadth-first-search">Breadth-first search</option>
                 <option value="depth-first-search">Depth-first search</option>

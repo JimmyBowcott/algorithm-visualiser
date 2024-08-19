@@ -36,7 +36,7 @@ export default {
       },
       gridTemplateColumns: {
         '15': 'repeat(15, minmax(0, 1fr))',
-      }
+      },
     },
   },
   plugins: [],

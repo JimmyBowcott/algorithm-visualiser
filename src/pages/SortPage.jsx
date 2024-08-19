@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useState, useEffect } from 'react';
 import SortVisualiser from "../components/SortVisualiser";
 
@@ -25,10 +25,13 @@ const SortPage = () => {
     const query = useQuery();
     const location = useLocation();
     const [type, setType] = useState(query.get('type'));
+    const navigate = useNavigate();
 
     useEffect (() => {
-        setType(query.get('type'));
-    }, [location.search, query]);  
+        const t = query.get('type');
+        if (!descriptions[t]) { navigate('/sort?type=selection') }
+        setType(t);
+    }, [location.search, query, navigate]); 
 
     return (
         <div className="flex flex-col gap-2 w-full flex-grow relative">
