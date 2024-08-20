@@ -27,12 +27,12 @@ const TreeCard = ({title, index, to, nHovered, highlightN, line=false}) => {
                     <div className="w-full h-auto">
                         <video
                             ref={videoRef}
-                            src={`./previews/videos/${to}.mp4`}
-                            poster={`./previews/thumbs/${to}.png`}
+                            src={`./previews/videos/trees/${to}.mp4`}
+                            poster={`./previews/thumbs/trees/${to}.png`}
                             width="100%"
                             muted
                             loop
-                            style={{ objectFit: 'cover', imageRendering: 'pixelated' }}
+                            style={{ objectFit: 'cover'}}
                         >
                     </video>
                 </div>

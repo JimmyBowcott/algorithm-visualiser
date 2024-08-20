@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 
-const GraphCard = ({title, to}) => {
+const GraphCard = ({title, to, src}) => {
     const videoRef = useRef(null);
 
     const handleMouseEnter = () => {
@@ -50,8 +50,8 @@ const GraphCard = ({title, to}) => {
                     <div className="w-full h-auto">
                         <video
                             ref={videoRef}
-                            src={`./previews/videos/${to}.mp4`}
-                            poster={`./previews/thumbs/${to}.png`}
+                            src={`./previews/videos/graph/${src}.mp4`}
+                            poster={`./previews/thumbs/graph/${src}.png`}
                             width="100%"
                             muted
                             loop
@@ -70,7 +70,8 @@ const GraphCard = ({title, to}) => {
 GraphCard.propTypes = {
     title: PropTypes.string.isRequired,
     index: PropTypes.number,
-    to: PropTypes.string
+    to: PropTypes.string,
+    src: PropTypes.string
 };
 
 export default GraphCard

@@ -22,8 +22,8 @@ const ArrayCard = ({title, to}) => {
                 <div className="w-full h-auto">
                     <video
                         ref={videoRef}
-                        src={`./previews/videos/${to}.mp4`}
-                        poster={`./previews/thumbs/${to}.png`}
+                        src={`./previews/videos/arrays/${to}.mp4`}
+                        poster={`./previews/thumbs/arrays/${to}.png`}
                         width="100%"
                         muted
                         loop

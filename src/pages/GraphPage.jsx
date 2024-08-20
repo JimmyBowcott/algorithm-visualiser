@@ -26,9 +26,10 @@ function replaceDash(string) {
 
 const descriptions = {
     'breadth-first-search': 'Starts at the root and searches all neighbours for the shortest path to the end node.',
-    'depth-first-search': 'Explores as deep as possible before backtracking. Does not guarentee the shortest path.',
-    'A*': 'Uses a heuristic approach as well as a priority queue to explore nodes with the lowest cost first.'
-  }
+    'depth-first-search': 'Explores as deep as possible before backtracking. Does not guarantee the shortest path.',
+    'a*': 'Uses a heuristic approach as well as a priority queue to explore nodes with the lowest cost first.',
+    'dijkstra': 'Finds the shortest path to the end node by exploring nodes with the lowest cumulative cost.'
+};
 
 const GraphPage = () => {
     const query = useQuery();
@@ -37,12 +38,21 @@ const GraphPage = () => {
     const title = replaceDash(capitalise(type))
     const navigate = useNavigate();
     const [tip, setTip] = useState(true);
+    const [tipHovered , setTipHovered] = useState(false);
 
     useEffect (() => {
         const t = query.get('type');
         if (!descriptions[t]) { navigate('/graph?type=breadth-first-search') }
         setType(t);
     }, [location.search, query, navigate]);
+
+    const handleTipEnter = () => {
+        setTipHovered(true);
+    }
+
+    const handleTipLeave = () => {  
+        setTipHovered(false);
+    }
 
     return (
         <div className="flex flex-col gap-2 w-full flex-grow relative">
@@ -53,10 +63,11 @@ const GraphPage = () => {
                 <h1 className="text-3xl sm:text-4xl mt-8 sm:m-0">{title}</h1>
                 <p className="text-lg">{descriptions[type] || descriptions['selection']}</p>
                 { tip && 
-                <div className="flex flex-row gap-2 items-center cursor-pointer" onClick={() => setTip(false)}>
-                    <p className="text-lg">Tip: <span className="text-orange-600">Click the squares</span> to add a wall!</p>
-                    <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path id="Vector" d="M16 16L12 12M12 12L8 8M12 12L16 8M12 12L8 16" className="stroke-slate-300 hover:stroke-orange-600 stroke-2" strokeLinecap="round" strokeLinejoin="round" />
+                <div className="flex flex-row gap-2 items-center">
+                    <p className="text-lg">Tip: <span className="text-orange-600">Click or drag the squares</span> to add a wall!</p>
+                    <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    className="cursor-pointer" onClick={() => setTip(false)} onMouseEnter={() => handleTipEnter()} onMouseLeave={() => handleTipLeave()}>
+                        <path id="Vector" d="M16 16L12 12M12 12L8 8M12 12L16 8M12 12L8 16" className={`${tipHovered ? 'stroke-orange-600' : 'stroke-slate-300'} stroke-2`} strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                 </div>
                 }
